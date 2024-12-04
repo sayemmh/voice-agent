@@ -42,18 +42,6 @@ ExpressWs(app);
 
 const PORT = process.env.PORT || 3000;
 
-// app.post('/incoming/:phonenumber', (req, res) => {
-//   try {
-//     const response = new VoiceResponse();
-//     const connect = response.connect();
-//     connect.stream({ url: `wss://${process.env.SERVER}/connection` });
-  
-//     res.type('text/xml');
-//     res.end(response.toString());
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
 
 app.post('/incoming/:phonenumber', (req, res) => {
 
