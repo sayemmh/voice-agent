@@ -12,18 +12,153 @@ const { recordingService } = require('./services/recording-service');
 
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
 
+var phonenumberlist;
+var contact_id = "";
+var campaign_id = "";
+var avaliable_times_info;
+var ai_profile_name = "Brandon";
+var fullname = "Elina";
+var voiceId;
+
+var content = "";
+var todo = "";
+var notodo = "";
+var email = "";
+var company = "";
+var contact_company = "";
+var contact_position = "";
+var stability = "";
+var style_exaggeration = "";
+var similarity_boost = "";
+var phonenumber = "";
+var calendarlink = "";
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
+const twilio = require('twilio');
+
 const app = express();
 ExpressWs(app);
 
 const PORT = process.env.PORT || 3000;
 
-app.post('/incoming', (req, res) => {
+// app.post('/incoming/:phonenumber', (req, res) => {
+//   try {
+//     const response = new VoiceResponse();
+//     const connect = response.connect();
+//     connect.stream({ url: `wss://${process.env.SERVER}/connection` });
+  
+//     res.type('text/xml');
+//     res.end(response.toString());
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+app.post('/incoming/:phonenumber', (req, res) => {
+
+  phonenumber = req.params.phonenumber; 
+
+  console.log(`Recieved: ${phonenumber}`);
+
+
+  if (phonenumber) {
+    const filePath = `./support/${phonenumber}.txt`;
+    console.log(`filePath : ${filePath}`)
+
+
+    // ... existing code ...
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const contactData = JSON.parse(fileContent);
+
+
+      todo = contactData.todo;
+      notodo = contactData.notodo;
+      // fullname = contactData.fullname;
+      ai_profile_name = contactData.ai_profile_name;
+      email = contactData.email;
+      company = contactData.company;
+      contact_position = contactData.contact_position;
+      contact_company = contactData.contact_company;
+      contact_id = contactData.contact_id;
+      voiceId = contactData.voiceId;
+      style_exaggeration = contactData.style_exaggeration;
+      stability = contactData.stability;
+      similarity_boost = contactData.similarity_boost;
+      calendarlink = contactData.calendarlink;
+      campaign_id = contactData.campaign_id;
+      content = fs.readFileSync(`./support/${phonenumber}_content.txt`, 'utf8'); 
+      console.log(`Content_content : ${content}`);
+    }
+    
+     else {
+      console.error(`File  not found.`);
+      res.status(404).send('Contact file not found');
+      return;
+    }
+
+    try {
+      callstatus = "Not answered";
+      const response = new VoiceResponse();
+      const connect = response.connect();
+      const uniqueConnectionId = `${phonenumber}-${Date.now()}`; // Unique identifier
+      connect.stream({ url: `wss://${process.env.SERVER}/realtime` });
+      res.type("text/xml");
+      res.end(response.toString());
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+   else {
+    twiml.say('Hello good');
+  }
+});
+
+app.post("/outcoming", async (req, res) => {
+  const avaliable_times = await get_Avaliable_time();
+  avaliable_times_info = `Avaliable times to schedule: "${avaliable_times}"`;
+  console.log(`avaliable_times_info : ${avaliable_times_info}`);
+  let phonenumber = req.query.phonenumber; // Assuming contact_ID is passed in the query to identify the file
+  const filePath = `./scripts/${phonenumber}.txt`;
+  console.log(`filePath : ${filePath}`)
+
+  if (fs.existsSync(filePath)) {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const contactData = JSON.parse(fileContent);
+
+    phonenumber = contactData.phonenumber;
+    todo = contactData.todo;
+    notodo = contactData.notodo;
+    fullname = contactData.fullname;
+    ai_profile_name = contactData.ai_profile_name;
+    email = contactData.email;
+    company = contactData.company;
+    contact_position = contactData.contact_position;
+    contact_company = contactData.contact_company;
+    contact_id = contactData.contact_id;
+    voiceId = contactData.voiceId;
+    style_exaggeration = contactData.style_exaggeration;
+    stability = contactData.stability;
+    similarity_boost = contactData.similarity_boost;
+    calendarlink = contactData.calendarlink;
+    campaign_id = contactData.campaign_id;
+    content = fs.readFileSync(`./scripts/${ai_profile_name}.txt`, 'utf8'); 
+    console.log(`Content_content : ${content}`)
+  } else {
+    console.error(`File  not found.`);
+    res.status(404).send('Contact file not found');
+    return;
+  }
+
   try {
+    callstatus = "Not answered";
     const response = new VoiceResponse();
     const connect = response.connect();
+    const uniqueConnectionId = `${phonenumber}-${Date.now()}`; // Unique identifier
     connect.stream({ url: `wss://${process.env.SERVER}/connection` });
-  
-    res.type('text/xml');
+    res.type("text/xml");
     res.end(response.toString());
   } catch (err) {
     console.log(err);
