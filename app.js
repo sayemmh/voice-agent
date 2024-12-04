@@ -116,54 +116,6 @@ app.post('/incoming/:phonenumber', (req, res) => {
   }
 });
 
-app.post("/outcoming", async (req, res) => {
-  const avaliable_times = await get_Avaliable_time();
-  avaliable_times_info = `Avaliable times to schedule: "${avaliable_times}"`;
-  console.log(`avaliable_times_info : ${avaliable_times_info}`);
-  let phonenumber = req.query.phonenumber; // Assuming contact_ID is passed in the query to identify the file
-  const filePath = `./scripts/${phonenumber}.txt`;
-  console.log(`filePath : ${filePath}`)
-
-  if (fs.existsSync(filePath)) {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const contactData = JSON.parse(fileContent);
-
-    phonenumber = contactData.phonenumber;
-    todo = contactData.todo;
-    notodo = contactData.notodo;
-    fullname = contactData.fullname;
-    ai_profile_name = contactData.ai_profile_name;
-    email = contactData.email;
-    company = contactData.company;
-    contact_position = contactData.contact_position;
-    contact_company = contactData.contact_company;
-    contact_id = contactData.contact_id;
-    voiceId = contactData.voiceId;
-    style_exaggeration = contactData.style_exaggeration;
-    stability = contactData.stability;
-    similarity_boost = contactData.similarity_boost;
-    calendarlink = contactData.calendarlink;
-    campaign_id = contactData.campaign_id;
-    content = fs.readFileSync(`./scripts/${ai_profile_name}.txt`, 'utf8'); 
-    console.log(`Content_content : ${content}`)
-  } else {
-    console.error(`File  not found.`);
-    res.status(404).send('Contact file not found');
-    return;
-  }
-
-  try {
-    callstatus = "Not answered";
-    const response = new VoiceResponse();
-    const connect = response.connect();
-    const uniqueConnectionId = `${phonenumber}-${Date.now()}`; // Unique identifier
-    connect.stream({ url: `wss://${process.env.SERVER}/connection` });
-    res.type("text/xml");
-    res.end(response.toString());
-  } catch (err) {
-    console.log(err);
-  }
-});
 
 app.ws('/connection', (ws) => {
   try {
