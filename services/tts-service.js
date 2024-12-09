@@ -2,6 +2,8 @@ require('dotenv').config();
 const { Buffer } = require('node:buffer');
 const EventEmitter = require('events');
 const fetch = require('node-fetch');
+const axios = require('axios');
+const { isNull } = require('node:util');
 
 class TextToSpeechService extends EventEmitter {
   constructor() {
