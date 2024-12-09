@@ -180,7 +180,7 @@ app.post("/outcoming", async (req, res) => {
     const response = new VoiceResponse();
     const connect = response.connect();
     const uniqueConnectionId = `${phonenumber}-${Date.now()}`; // Unique identifier
-    connect.stream({ url: `wss://62ab-188-43-33-253.ngrok-free.app/connection` });
+    connect.stream({ url: `wss://${process.env.SERVER}/connection` });
     console.log(connect)
     res.type("text/xml");
     res.end(response.toString());
