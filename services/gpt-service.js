@@ -28,64 +28,32 @@ class GptService extends EventEmitter {
 
   setUserContext(toNumber, payorName, NPI, patientFirstName, patientLastName, subscriberId, TIN, callbackNumber, dateOfBirth) {
 
-  //   this.userContext.push({
-  //     role: 'system',
-  //     content: `Initiating an outbound call with the following details:
-  //     To Number: ${toNumber},
-  //     Payor Name: ${payorName},
-  //     NPI: ${NPI},
-  //     Patient Name: ${patientFirstName} ${patientLastName},
-  //     Subscriber ID: ${subscriberId},
-  //     TIN: ${TIN},
-  //     Callback Number: ${callbackNumber},
-  //     Date of Birth: ${dateOfBirth}.`
-  //   });
-
-  // // Add further guidance for the assistant
-  //   this.userContext.push({
-  //       role: 'system',
-  //       content: `You should keep your response short, in 1-2 sentences. Make sure to verify the details before proceeding. Keep responses clear and concise.`
-  //   });
-  const outboundCallMessage = `Initiating an outbound call with the following details:
-  To Number: ${toNumber},
-  Payor Name: ${payorName},
-  NPI: ${NPI},
-  Patient Name: ${patientFirstName} ${patientLastName},
-  Subscriber ID: ${subscriberId},
-  TIN: ${TIN},
-  Callback Number: ${callbackNumber},
-  Date of Birth: ${dateOfBirth}.`;
-
-const responseGuidanceMessage = `You should keep your response short, in 1-2 sentences. Make sure to verify the details before proceeding. Keep responses clear and concise.`;
-
-// Function to split a large message into chunks
-const maxChunkLength = 1500; // Adjust the chunk length based on the TTS token limit
-const splitMessage = (message) => {
-  const chunks = [];
-  for (let i = 0; i < message.length; i += maxChunkLength) {
-    chunks.push(message.substring(i, i + maxChunkLength));
-  }
-  return chunks;
-};
-
-// Split both messages if they are too long
-const chunks = [
-  ...splitMessage(outboundCallMessage),
-  ...splitMessage(responseGuidanceMessage)
-];
-
-// Clear existing user context before pushing new data
-this.userContext = []; // Optional: Use if you want to reset the context before each new request.
-
-// Push each chunk to the userContext to avoid hitting the TTS token limit
-chunks.forEach(chunk => {
-  this.userContext.push({
-    role: 'system',
-    content: chunk
-  });
-});
-
-console.log(`User context updated with ${this.userContext.length} messages.`);
+    // this.userContext.push({
+    //   role: 'system',
+    //   content: `Initiating an outbound call with the following details:
+    //   To Number: ${toNumber},
+    //   Payor Name: ${payorName},
+    //   NPI: ${NPI},
+    //   Patient Name: ${patientFirstName} ${patientLastName},
+    //   Subscriber ID: ${subscriberId},
+    //   TIN: ${TIN},
+    //   Callback Number: ${callbackNumber},
+    //   Date of Birth: ${dateOfBirth}.`
+    // });
+    
+    this.userContext.push({
+      role: 'system',
+      content: `Initiating an outbound call with the following details:
+      To Number: ${toNumber},
+      Payor Name: ${payorName},
+      `
+    });
+  // Add further guidance for the assistant
+    this.userContext.push({
+        role: 'system',
+        content: `You should keep your response short, in 1-2 sentences. Make sure to verify the details before proceeding. Keep responses clear and concise.`
+    });
+     
   
     }
   validateFunctionArgs(args) {
