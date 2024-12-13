@@ -65,7 +65,7 @@ class GptService extends EventEmitter {
     try {
       return JSON.parse(args);
     } catch (error) {
-      console.log('Aviso: Argumentos de função duplicados retornados pelo OpenAI:', args);
+      console.log('Warning: Duplicate function arguments returned by OpenAI:', args);
       if (args.indexOf('{') != args.lastIndexOf('{')) {
         return JSON.parse(args.substring(args.indexOf(''), args.indexOf('}') + 1));
       }
@@ -129,13 +129,26 @@ class GptService extends EventEmitter {
     delete this.activeStreams[interactionCount];
   }
 
+  // stop(interactionCount) {
+  //   if (this.activeStreams[interactionCount]) {
+  //     this.activeStreams[interactionCount].abort();
+  //     delete this.activeStreams[interactionCount];
+  //     console.log(`Stopping GPT service for interaction ${interactionCount}`);
+  //   }
+  // }
   stop(interactionCount) {
     if (this.activeStreams[interactionCount]) {
-      this.activeStreams[interactionCount].abort();
+      const streamEntry = this.activeStreams[interactionCount];
+      if (streamEntry.abort && typeof streamEntry.abort === 'function') {
+        streamEntry.abort(); // Ensure abort is a function
+      } else {
+        console.warn(`Abort not found or not a function for interaction ${interactionCount}`);
+      }
       delete this.activeStreams[interactionCount];
       console.log(`Stopping GPT service for interaction ${interactionCount}`);
     }
   }
+  
 }
 
 module.exports = { GptService };
