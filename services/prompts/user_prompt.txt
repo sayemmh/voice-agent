@@ -1,0 +1,9 @@
+Initiating an outbound call with the following details:
+To Number: {toNumber}
+Payor Name: {payorName}
+NPI: {NPI}
+Patient Name: {patientFirstName} {patientLastName}
+Subscriber ID: {subscriberId}
+TIN: {TIN}
+Callback Number: {callbackNumber}
+Date of Birth: {dateOfBirth}
