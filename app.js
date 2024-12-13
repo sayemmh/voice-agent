@@ -186,40 +186,40 @@ app.ws("/connection", (ws) => {
   console.log("connection");
   try {
     ws.on("error", console.error);
-    ws.on("close", async () => {
-      try {
-        callstatus = await chatGpt(communicationtext);
+    // ws.on("close", async () => {
+    //   try {
+    //     callstatus = await chatGpt(communicationtext);
         
-        await client.recordings
-          .list({ callSid: callSid }) // Replace with your actual callSid
-          .then((recordings) => {
-            return Promise.all(recordings.map((recording) => {
-              console.log(`Recording SID: ${recording.sid}`); 
-              console.log('--------------Recording Url:', recording.uri); // This is your recordingSid
-              recordingSid = recording.sid;
+    //     await client.recordings
+    //       .list({ callSid: callSid }) // Replace with your actual callSid
+    //       .then((recordings) => {
+    //         return Promise.all(recordings.map((recording) => {
+    //           console.log(`Recording SID: ${recording.sid}`); 
+    //           console.log('--------------Recording Url:', recording.uri); // This is your recordingSid
+    //           recordingSid = recording.sid;
 
-              return client.recordings(recordingSid)
-                .fetch()
-                .then(recording => {
-                  recordingUrl = `https://api.twilio.com${recording.uri.replace('.json', '.mp3')}`;
-                  console.log(recordingUrl);
-                });
-            }));
-          })
-          .catch((error) => console.error(error));
+    //           return client.recordings(recordingSid)
+    //             .fetch()
+    //             .then(recording => {
+    //               recordingUrl = `https://api.twilio.com${recording.uri.replace('.json', '.mp3')}`;
+    //               console.log(recordingUrl);
+    //             });
+    //         }));
+    //       })
+    //       .catch((error) => console.error(error));
 
-        await updateData(communicationtext, _contactID, _campaignID, callstatus, recordingUrl);
-        const schedule_date_time = await getData_Calendly(
-          callstatus,
-          calendarlink
-        );
-        console.log(callstatus);
-        console.log(schedule_date_time);
-        makeschedule(schedule_date_time, _full_name, contact_email);
-      } catch (error) {
-        console.error("Error processing stop event:", error);
-      }
-    });
+    //     await updateData(communicationtext, _contactID, _campaignID, callstatus, recordingUrl);
+    //     const schedule_date_time = await getData_Calendly(
+    //       callstatus,
+    //       calendarlink
+    //     );
+    //     console.log(callstatus);
+    //     console.log(schedule_date_time);
+    //     makeschedule(schedule_date_time, _full_name, contact_email);
+    //   } catch (error) {
+    //     console.error("Error processing stop event:", error);
+    //   }
+    // });
 
     let streamSid;
     let callSid;
