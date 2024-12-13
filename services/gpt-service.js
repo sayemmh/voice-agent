@@ -28,26 +28,20 @@ class GptService extends EventEmitter {
 
   setUserContext(toNumber, payorName, NPI, patientFirstName, patientLastName, subscriberId, TIN, callbackNumber, dateOfBirth) {
 
-    // this.userContext.push({
-    //   role: 'system',
-    //   content: `Initiating an outbound call with the following details:
-    //   To Number: ${toNumber},
-    //   Payor Name: ${payorName},
-    //   NPI: ${NPI},
-    //   Patient Name: ${patientFirstName} ${patientLastName},
-    //   Subscriber ID: ${subscriberId},
-    //   TIN: ${TIN},
-    //   Callback Number: ${callbackNumber},
-    //   Date of Birth: ${dateOfBirth}.`
-    // });
-    
     this.userContext.push({
       role: 'system',
       content: `Initiating an outbound call with the following details:
       To Number: ${toNumber},
       Payor Name: ${payorName},
-      `
+      NPI: ${NPI},
+      Patient Name: ${patientFirstName} ${patientLastName},
+      Subscriber ID: ${subscriberId},
+      TIN: ${TIN},
+      Callback Number: ${callbackNumber},
+      Date of Birth: ${dateOfBirth}.`
     });
+    
+
   // Add further guidance for the assistant
     this.userContext.push({
         role: 'system',
