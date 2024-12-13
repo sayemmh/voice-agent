@@ -64,7 +64,7 @@ class GptService_Incoming extends EventEmitter {
     this.updateUserContext(name, role, text);
 
     if (this.activeStreams[interactionCount]) {
-      this.activeStreams[interactionCount].abort = true;
+      this.activeStreams[interactionCount].abort = true;  
     }
 
     const controller = new AbortController();

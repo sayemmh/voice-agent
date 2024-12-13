@@ -26,22 +26,41 @@ class GptService extends EventEmitter {
     this.userContext.push({ 'role': 'system', 'content': `callSid: ${callSid}` });
   }
 
-  setUserContext(content, todo, notodo, fullname, ai_profile_name) {
-    this.userContext.push({ 'role': 'system', 'content': `Use this script to engage in conversations with your users: '${content}'.
-    You should provide accurate contact information, such as name, company, position, etc.` });
-    this.userContext.push({ 'role': 'system', 'content': `You should keep your response short, in 1-2 sentences. You should sound like a real human being so talk like one. ${todo}` }); this.userContext.push({ 'role': 'system', 'content': `You should never say 'symbols' like '[], {}, #'. You should never say "AirPods".
-    Do not use words like um, ahh, ehh, yea, umm, hmm. When you say the date, you should say the month, day, hour, and minute. Do not say the day of the week.
-    For example, instead of saying "it's Friday at 10:00 AM", if Friday is August 3rd, say "it's August 3rd at 10:00 AM".
-    Do not repeat your answers and do not repeat questions unless asked to please repeat. Always wait for the answer to the question before continuing.
-    You should never make a sound that is boring or that is not a human sound.
-    Never repeat questions at the beginning ${notodo}` });
-    this.userContext.push({ 'role': 'system', 'content': `The name user's name is ${fullname} and their name is ${ai_profile_name}` });
-    this.userContext.push({ 'role': 'system', 'content': ` you can suggest two options to the user to schedule using these available times. But we need to offer the user 3 hours less.
-    For example, if 10 am on August 5th and 5 pm on August 7th were selected, the times you would use for conversations would be 7 am on August 5th and 2 pm on August 7th.
-    Also, the time must be between 9:00 am and 7:00 pm.
-    In this case, when providing the date, you should provide the month, day, hour, minute.` });
-    }
+  setUserContext(toNumber, payorName, NPI, patientFirstName, patientLastName, subscriberId, TIN, callbackNumber, dateOfBirth) {
+    // this.userContext.push({ 'role': 'system', 'content': `Use this script to engage in conversations with your users: '${content}'.
+    // You should provide accurate contact information, such as name, company, position, etc.` });
+    // this.userContext.push({ 'role': 'system', 'content': `You should keep your response short, in 1-2 sentences. You should sound like a real human being so talk like one. ${todo}` }); this.userContext.push({ 'role': 'system', 'content': `You should never say 'symbols' like '[], {}, #'. You should never say "AirPods".
+    // Do not use words like um, ahh, ehh, yea, umm, hmm. When you say the date, you should say the month, day, hour, and minute. Do not say the day of the week.
+    // For example, instead of saying "it's Friday at 10:00 AM", if Friday is August 3rd, say "it's August 3rd at 10:00 AM".
+    // Do not repeat your answers and do not repeat questions unless asked to please repeat. Always wait for the answer to the question before continuing.
+    // You should never make a sound that is boring or that is not a human sound.
+    // Never repeat questions at the beginning ${notodo}` });
+    // this.userContext.push({ 'role': 'system', 'content': `The name user's name is ${fullname} and their name is ${ai_profile_name}` });
+    // this.userContext.push({ 'role': 'system', 'content': ` you can suggest two options to the user to schedule using these available times. But we need to offer the user 3 hours less.
+    // For example, if 10 am on August 5th and 5 pm on August 7th were selected, the times you would use for conversations would be 7 am on August 5th and 2 pm on August 7th.
+    // Also, the time must be between 9:00 am and 7:00 pm.
+    // In this case, when providing the date, you should provide the month, day, hour, minute.` });
+    // }
 
+    this.userContext.push({
+      role: 'system',
+      content: `Initiating an outbound call with the following details:
+      To Number: ${toNumber},
+      Payor Name: ${payorName},
+      NPI: ${NPI},
+      Patient Name: ${patientFirstName} ${patientLastName},
+      Subscriber ID: ${subscriberId},
+      TIN: ${TIN},
+      Callback Number: ${callbackNumber},
+      Date of Birth: ${dateOfBirth}.`
+    });
+
+  // Add further guidance for the assistant
+    this.userContext.push({
+        role: 'system',
+        content: `Make sure to verify the details before proceeding. Keep responses clear and concise.`
+    });
+    }
   validateFunctionArgs(args) {
     try {
       return JSON.parse(args);

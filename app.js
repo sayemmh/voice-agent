@@ -143,29 +143,19 @@ app.post("/outcoming", async (req, res) => {
   const avaliable_times = await get_Avaliable_time();
   avaliable_times_info = `Avaliable times to schedule: "${avaliable_times}"`;
   console.log(`avaliable_times_info : ${avaliable_times_info}`);
-  let phonenumber = req.query.phonenumber; // Assuming contact_ID is passed in the query to identify the file
-  let content_prompt =req.query.prompt;
-
+  
   if (true || fs.existsSync(filePath)) {
   
+    toNumber = req.query.toNumber;
+    payorName = req.query.payorName;
+    NPI = req.query.NPI;
+    patientFirstName = req.query.patientFirstName;
+    patientLastName = req.query.patientLastName;
+    subscriberId = req.query.subscriberId;
+    TIN = req.query.TIN;
+    callbackNumber = req.query.callbackNumber;
+    dateOfBirth = req.query.dateOfBirth;
 
-    todo = "Call back the client";
-    notodo = "Do not share personal information";
-    fullname = "John Doe";
-    ai_profile_name = "Gill";
-    email = "johndoe@example.com";
-    company = "Example Corp";
-    contact_position = "Manager";
-    contact_company = "Example Corp";
-    contact_id = "1722703887022x843080806593462300";
-    voiceId = "YsMzSICQcD8ANXItP7BU";
-    style_exaggeration = 1.0;
-    stability = 0.8;
-    similarity_boost = 0.9;
-    calendarlink = "http://example.com/calendar";
-    campaign_id = "1722840799056x482480297004498940";
-    content = content_prompt;
-    console.log(`Content_content : ${content}`)
   } else {
     console.error(`File  not found.`);
     res.status(404).send('Contact file not found');
@@ -173,8 +163,7 @@ app.post("/outcoming", async (req, res) => {
   }
   
   try {
-    console.log('phone', phonenumber);
-    console.log('prompt', content);
+
   
     callstatus = "Not answered";
     const response = new VoiceResponse();
@@ -193,17 +182,7 @@ app.post("/outcoming", async (req, res) => {
 
 app.ws("/connection", (ws) => {
   console.log('connected')
-  var _contactID = contact_id;
-  var _campaignID = campaign_id;
-  var callstatus = "";
   var communicationtext = "";
-  const re_phonenumber = phonenumber;
-  var contact_email = email;
-  var _full_name = fullname;
-  var _voiceId = voiceId;
-  var _aiprofilename = ai_profile_name;
-  var recordingSid = '';
-  var recordingUrl = '';
   console.log("connection");
   try {
     ws.on("error", console.error);
@@ -266,22 +245,16 @@ app.ws("/connection", (ws) => {
         console.log("start");
         streamSid = msg.start.streamSid;
         callSid = msg.start.callSid;
-        console.log(`Received phonenumber: ${re_phonenumber}`);
+        // console.log(`Received phonenumber: ${re_phonenumber}`);
         console.log(streamSid);
         streamService.setStreamSid(streamSid);
         gptService.setCallSid(callSid);
-        gptService.setUserContext(
-          content,
-          todo,
-          notodo,
-          avaliable_times_info,
-          _full_name,
-          _aiprofilename
-        );
+        gptService.setUserContext(toNumber, payorName, NPI, patientFirstName, patientLastName, subscriberId, TIN, callbackNumber, dateOfBirth)
         ttsService.generate(
           {
             partialResponseIndex: null,
-            partialResponse: `Hello, ${fullname}. ${timeOfDay} I see you work for ${contact_company}. Are you still responsible for ${contact_position}?`,
+            // partialResponse: `Hello, ${fullname}. ${timeOfDay} I see you work for ${contact_company}. Are you still responsible for ${contact_position}?`,
+            partialResponse:`Hello, This is a helpful assistant from your doctor office. How can I assist you today?`
           },
           0,
           
@@ -302,7 +275,7 @@ app.ws("/connection", (ws) => {
         marks = marks.filter((m) => m !== msg.mark.name);
       } else if (msg.event === "stop") {
         console.log(`Twilio -> Media stream ${streamSid} ended.`.underline.red);
-        console.log(`Context : ${communicationtext}`);
+        // console.log(`Context : ${communicationtext}`);
       }
     });
 
@@ -328,7 +301,7 @@ app.ws("/connection", (ws) => {
       console.log(
         `Interaction ${interactionCount} : STT -> GPT: ${text}`.yellow
       );
-      console.log(`phonenumber : ${re_phonenumber}`);
+      // console.log(`phonenumber : ${re_phonenumber}`);
       communicationtext += `Contact: ${text}\n`;
 
       if (interactionCount !== currentIcount) {
@@ -344,10 +317,7 @@ app.ws("/connection", (ws) => {
       console.log(
         `Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green
       );
-      // if (icount !== currentIcount) {
-      //   ttsService.stop(currentIcount);
-      //   currentIcount = icount;
-      // }
+      
 
     
       ttsService.generate(gptReply, icount);
