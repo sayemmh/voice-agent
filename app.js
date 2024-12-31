@@ -186,40 +186,6 @@ app.ws("/connection", (ws) => {
   console.log("connection");
   try {
     ws.on("error", console.error);
-    // ws.on("close", async () => {
-    //   try {
-    //     callstatus = await chatGpt(communicationtext);
-        
-    //     await client.recordings
-    //       .list({ callSid: callSid }) // Replace with your actual callSid
-    //       .then((recordings) => {
-    //         return Promise.all(recordings.map((recording) => {
-    //           console.log(`Recording SID: ${recording.sid}`); 
-    //           console.log('--------------Recording Url:', recording.uri); // This is your recordingSid
-    //           recordingSid = recording.sid;
-
-    //           return client.recordings(recordingSid)
-    //             .fetch()
-    //             .then(recording => {
-    //               recordingUrl = `https://api.twilio.com${recording.uri.replace('.json', '.mp3')}`;
-    //               console.log(recordingUrl);
-    //             });
-    //         }));
-    //       })
-    //       .catch((error) => console.error(error));
-
-    //     await updateData(communicationtext, _contactID, _campaignID, callstatus, recordingUrl);
-    //     const schedule_date_time = await getData_Calendly(
-    //       callstatus,
-    //       calendarlink
-    //     );
-    //     console.log(callstatus);
-    //     console.log(schedule_date_time);
-    //     makeschedule(schedule_date_time, _full_name, contact_email);
-    //   } catch (error) {
-    //     console.error("Error processing stop event:", error);
-    //   }
-    // });
 
     let streamSid;
     let callSid;
@@ -589,19 +555,7 @@ app.ws("/realtime", (ws, req) => {
         data: msg.media.payload
       }));
 
-      // Commit the audio data
-      // openAIWs.send(JSON.stringify({
-      //   type: "input_audio_buffer.commit"
-      // }));
-
-      // Request a response
-      // openAIWs.send(JSON.stringify({
-      //   type: "response.create",
-      //   response: {
-      //     modalities: ["audio", "text"],
-      //     instructions: "Please transcribe the audio and provide a concise summary. Respond in a friendly and professional manner."
-      //   }
-      // }));
+     
     }
   });
 

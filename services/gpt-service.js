@@ -14,6 +14,8 @@ tools.forEach((tool) => {
 const openaikey = process.env.OPENAI_API_KEY;
 
 
+
+
 class GptService extends EventEmitter {
   constructor() {
     super();
@@ -27,30 +29,7 @@ class GptService extends EventEmitter {
     this.userContext.push({ 'role': 'system', 'content': `callSid: ${callSid}` });
   }
 
-  // setUserContext(toNumber, payorName, NPI, patientFirstName, patientLastName, subscriberId, TIN, callbackNumber, dateOfBirth) {
-
-  //   this.userContext.push({
-  //     role: 'system',
-  //     content: `Initiating an outbound call with the following details:
-  //     To Number: ${toNumber},
-  //     Payor Name: ${payorName},
-  //     NPI: ${NPI},
-  //     Patient Name: ${patientFirstName} ${patientLastName},
-  //     Subscriber ID: ${subscriberId},
-  //     TIN: ${TIN},
-  //     Callback Number: ${callbackNumber},
-  //     Date of Birth: ${dateOfBirth}.`
-  //   });
-    
-
-  // // Add further guidance for the assistant
-  //   this.userContext.push({
-  //       role: 'system',
-  //       content: `You should keep your response short, in 1-2 sentences. Make sure to verify the details before proceeding. Keep responses clear and concise.`
-  //   });
-     
   
-  //   }
   loadPrompt(promptName, variables) {
     return new Promise((resolve, reject) => {
       // Path to the prompts folder
@@ -183,13 +162,7 @@ class GptService extends EventEmitter {
     delete this.activeStreams[interactionCount];
   }
 
-  // stop(interactionCount) {
-  //   if (this.activeStreams[interactionCount]) {
-  //     this.activeStreams[interactionCount].abort();
-  //     delete this.activeStreams[interactionCount];
-  //     console.log(`Stopping GPT service for interaction ${interactionCount}`);
-  //   }
-  // }
+  
   stop(interactionCount) {
     if (this.activeStreams[interactionCount]) {
       const streamEntry = this.activeStreams[interactionCount];
